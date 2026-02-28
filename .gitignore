@@ -1,0 +1,32 @@
+# ==========================================
+# 2026 Claude Code CLI & AI 智能体专属忽略规则
+# ==========================================
+
+# 1. 拦截 Claude Code 的上下文与初始化状态文件
+init.md
+.claude/
+.claudecode/
+claude_*.md
+*.claude.*
+
+# 2. 拦截 Claude 自动生成的临时 Go 源码/测试文件
+# (它通常会加上 tmp, temp 前缀或后缀来跑隔离测试)
+*_tmp.go
+*_temp.go
+temp_*.go
+claude_*.go
+*.go
+
+# 3. 拦截 Go 自动编译产生的二进制文件和中间产物
+# (防止 AI 自动执行 go build 生成的体积庞大的垃圾文件入库)
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/bin/
+/build/
+
+# ==========================================
