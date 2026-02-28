@@ -1,6 +1,6 @@
-# golang-grpc-enterprise-demo
+# Production-ready Golang demo for scalable backend services — ideal for cloud-native microservices
 
-> **High-performance Golang gRPC + REST Hybrid API with PostgreSQL, JWT, Docker & OpenTelemetry — Ready for 2026 Cloud-Native Production.**
+> **High-performance Golang gRPC + REST Hybrid API with PostgreSQL, JWT, Docker & OpenTelemetry — Ready for Cloud-Native Production.**
 
 ---
 
