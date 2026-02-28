@@ -20,6 +20,18 @@
 
 ## Architecture
 
+<div align="center">
+  <img src="architecture-diagram.png" alt="Production-Ready Golang gRPC + REST Architecture" width="80%" style="max-width: 900px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+</div>
+
+**Production-ready Golang demo for scalable backend services — ideal for cloud-native microservices.**
+
+This demo features a high-performance gRPC + REST Hybrid API built with Clean Architecture, supporting dual paths (REST via HTTP/JSON and gRPC via Protobuf), JWT protection, Rate Limiting, and OpenTelemetry tracing.
+
+See the colored diagram above for visual overview.
+
+### Text-based Diagram (for quick reference / compatibility)
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        Clients                              │
