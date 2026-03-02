@@ -58,7 +58,15 @@ func main() {
 	defer shutdown(context.Background())
 
 	// ---------- Database ----------
-	db, err := gorm.Open(postgres.Open(cfg.DSN()), &gorm.Config{})
+	dsn := cfg.DSN()
+	if dsn == "" || dsn == "host= port= user= password= dbname= sslmode=disable" {
+		logger.Fatal("DATABASE_URL is empty — check Railway Variables",
+			zap.String("DATABASE_URL_env", os.Getenv("DATABASE_URL")),
+			zap.String("DB_HOST_env", os.Getenv("DB_HOST")),
+		)
+	}
+	logger.Info("connecting to database", zap.Bool("using_DATABASE_URL", cfg.DatabaseURL != ""))
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		logger.Fatal("failed to connect to database", zap.Error(err))
 	}

@@ -2,6 +2,16 @@
 
 > **High-performance Golang gRPC + REST Hybrid API with PostgreSQL, JWT, Docker & OpenTelemetry — Ready for Cloud-Native Production.**
 
+
+## 🎉 Live Demo
+
+**Try it now!**  
+Swagger UI: [https://golang-grpc-enterprise-demo-production.up.railway.app/swagger/index.html](https://golang-grpc-enterprise-demo-production.up.railway.app/swagger/index.html)  
+
+Live API Base URL: `https://golang-grpc-enterprise-demo-production.up.railway.app`
+
+(Username: alice@example.com / Password: password123)
+
 ---
 
 ## Features
@@ -13,7 +23,7 @@
 - **Rate Limiting** — Per-IP token bucket (default 100 req/min)
 - **OpenTelemetry Tracing** — Console exporter for every request span
 - **Structured Logging** — `uber-go/zap` production logger
-- **Clean Architecture** — handler → service → repository → model
+- **Clean Architecture** — Strictly follows SOLID principles and Clean Architecture for maximum maintainability, testability and scalability. Perfect for enterprise-level projects and long-term maintenance.
 - **Docker Ready** — Multi-stage Dockerfile + docker-compose one-command deployment
 
 ---
