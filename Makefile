@@ -1,4 +1,4 @@
-.PHONY: proto run build test docker-up docker-down clean
+.PHONY: proto run build test docker-up docker-down clean swagger
 
 # Generate protobuf code (requires protoc + plugins installed)
 proto:
@@ -9,6 +9,10 @@ proto:
 		-I proto \
 		-I third_party/googleapis \
 		proto/user.proto
+
+# Generate Swagger docs (requires: go install github.com/swaggo/swag/cmd/swag@latest)
+swagger:
+	swag init -g cmd/server/main.go -o docs --parseInternal
 
 # Run locally
 run:

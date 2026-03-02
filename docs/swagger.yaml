@@ -1,0 +1,205 @@
+basePath: /
+definitions:
+  internal_handler.CreateUserRequest:
+    properties:
+      email:
+        example: dave@example.com
+        type: string
+      name:
+        example: Dave Chen
+        type: string
+      password:
+        example: secure456
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  internal_handler.ErrorResponse:
+    properties:
+      error:
+        example: invalid credentials
+        type: string
+    type: object
+  internal_handler.ListUsersResponse:
+    properties:
+      page:
+        example: 1
+        type: integer
+      total:
+        example: 3
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/internal_handler.UserResponse'
+        type: array
+    type: object
+  internal_handler.LoginRequest:
+    properties:
+      email:
+        example: alice@example.com
+        type: string
+      password:
+        example: password123
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  internal_handler.TokenResponse:
+    properties:
+      token:
+        example: eyJhbGciOiJIUzI1NiIs...
+        type: string
+    type: object
+  internal_handler.UserResponse:
+    properties:
+      created_at:
+        example: "2026-03-02T10:00:00Z"
+        type: string
+      email:
+        example: alice@example.com
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Alice Wang
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: High-performance gRPC + REST Hybrid API with PostgreSQL, JWT, Docker
+    & OpenTelemetry.
+  title: Golang gRPC Enterprise Demo API
+  version: "1.0"
+paths:
+  /api/v1/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate with email and password, returns JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/internal_handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_handler.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      summary: User login
+      tags:
+      - Auth
+  /api/v1/users:
+    get:
+      description: Returns a paginated list of all users
+      parameters:
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Items per page
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_handler.ListUsersResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List users with pagination
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with name, email and password
+      parameters:
+      - description: User info
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/internal_handler.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/internal_handler.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+        "409":
+          description: Email already exists
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new user
+      tags:
+      - Users
+  /api/v1/users/{id}:
+    get:
+      description: Returns a single user by their ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_handler.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/internal_handler.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get user by ID
+      tags:
+      - Users
+securityDefinitions:
+  BearerAuth:
+    description: Enter "Bearer {token}" (get token from /api/v1/login)
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
