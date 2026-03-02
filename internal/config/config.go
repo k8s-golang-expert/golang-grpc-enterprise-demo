@@ -1,6 +1,8 @@
 package config
 
 import (
+	"os"
+
 	"github.com/spf13/viper"
 )
 
@@ -24,24 +26,41 @@ func Load() (*Config, error) {
 	viper.SetConfigFile(".env")
 	viper.AutomaticEnv()
 
+	// Explicitly bind ALL env vars so Unmarshal picks them up
+	for _, key := range []string{
+		"APP_ENV", "GRPC_PORT", "HTTP_PORT", "PORT",
+		"DATABASE_URL",
+		"DB_HOST", "DB_PORT", "DB_USER", "DB_PASSWORD", "DB_NAME", "DB_SSLMODE",
+		"JWT_SECRET", "JWT_EXPIRY_HOURS", "RATE_LIMIT_RPM",
+	} {
+		_ = viper.BindEnv(key)
+	}
+
 	// defaults
 	viper.SetDefault("GRPC_PORT", "50051")
 	viper.SetDefault("HTTP_PORT", "8080")
-
-	// Railway sets PORT — use it as HTTP_PORT if HTTP_PORT not explicitly set
-	if port := viper.GetString("PORT"); port != "" && viper.GetString("HTTP_PORT") == "" {
-		viper.Set("HTTP_PORT", port)
-	}
 	viper.SetDefault("DB_SSLMODE", "disable")
 	viper.SetDefault("JWT_EXPIRY_HOURS", 24)
 	viper.SetDefault("RATE_LIMIT_RPM", 100)
 
 	_ = viper.ReadInConfig() // ok if .env missing — env vars suffice
 
+	// Railway sets PORT — use it as HTTP_PORT if HTTP_PORT not explicitly set
+	if port := viper.GetString("PORT"); port != "" {
+		viper.Set("HTTP_PORT", port)
+	}
+
 	var cfg Config
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, err
 	}
+
+	// Double-check: os.Getenv as final fallback for DATABASE_URL
+	// (Viper sometimes misses it when no .env file exists)
+	if cfg.DatabaseURL == "" {
+		cfg.DatabaseURL = os.Getenv("DATABASE_URL")
+	}
+
 	return &cfg, nil
 }
 
